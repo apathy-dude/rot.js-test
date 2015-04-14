@@ -43,6 +43,10 @@ module.exports = function(grunt) {
                 }
             },
             watch: {
+                build: {
+                    files: [ 'src/**/*.js' ],
+                    tasks: [ 'test' ]
+                }
             }
     });
     

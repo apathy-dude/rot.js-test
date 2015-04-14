@@ -2,9 +2,10 @@ require(['config'], function() {
     'use strict';
 
     require([
+        'entity',
         'rot',
         'lodash'
-    ], function() {
+    ], function(Entity) {
         function generateMap(game) {
 
             function drawMap(game) {
@@ -24,6 +25,15 @@ require(['config'], function() {
                 }
             }
 
+            function createPlayer(game, freeCells) {
+                var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+                var key = freeCells.splice(index, 1)[0];
+                var parts = key.split(",");
+                var x = parseInt(parts[0]);
+                var y = parseInt(parts[1]);
+                game.player = new Entity(game, { x: x, y: y }, { symbol: '@', color: '#ff0' });
+            }
+
             var digger = new ROT.Map.Digger();
             var freeCells = [];
 
@@ -40,16 +50,27 @@ require(['config'], function() {
             generateBoxes(game, freeCells);
 
             drawMap(game);
+
+            createPlayer(game, freeCells);
         }
 
         var Game = {
             display: null,
+            engine: null,
             init: function() {
                 this.display = new ROT.Display();
-                generateMap(this);
                 document.body.appendChild(this.display.getContainer());
+
+                generateMap(this);
+
+                var scheduler = new ROT.Scheduler.Simple();
+                scheduler.add(this.player, true);
+
+                this.engine = new ROT.Engine(scheduler);
+                this.engine.start();
             },
-            map: {}
+            map: {},
+            player: null
         };
 
         Game.init();
