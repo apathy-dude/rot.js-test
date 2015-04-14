@@ -1,0 +1,24 @@
+{
+  "name": "roguelike",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/game.js",
+  "scripts": {
+    "start": "beefy src/game.js:bin/roguelike.min.js --live --bug=true",
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-mocha-test": "^0.12.7",
+    "load-grunt-tasks": "^3.1.0",
+    "mocha": "^2.2.0"
+  },
+  "author": "Thomas Brown",
+  "license": "Unlisence",
+  "dependencies": {}
+}

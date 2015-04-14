@@ -1,0 +1,22 @@
+{
+  "name": "roguelike",
+  "version": "0.0.0",
+  "authors": [
+    "Thomas Brown <flaron1990@hotmail.com>"
+  ],
+  "main": "src/game.js",
+  "license": "Unlisence",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "rot.js": "~0.5.0",
+    "requirejs": "~2.1.16",
+    "lodash": "~3.6.0"
+  }
+}
