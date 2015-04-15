@@ -25,6 +25,21 @@ define(['entity'], function(Entity) {
         handleEvent: {
             value: function(e) {
                 var code = e.keyCode;
+                if(code === 13 || code === 32) {
+                    var key = this.position.x + ',' + this.position.y;
+                    if(this.game.map[key] !== '*') {
+                        alert('There is no box here!');
+                    }
+                    else if(key === this.game.ananas) {
+                        alert('Hooray! You found an ananas and won this game.');
+                        this.game.engine.lock();
+                        window.removeEventListener('keydown', this);
+                    }
+                    else {
+                        alert('This box is empty');
+                    }
+                }
+
                 if(!(code in keyMap)) return;
 
                 var diff = ROT.DIRS[8][keyMap[code]];

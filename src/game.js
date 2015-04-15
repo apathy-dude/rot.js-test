@@ -3,9 +3,10 @@ require(['config'], function() {
 
     require([
         'player',
+        'pedro',
         'rot',
         'lodash'
-    ], function(Player) {
+    ], function(Player, Pedro) {
         function generateMap(game) {
 
             function drawMap(game) {
@@ -22,16 +23,18 @@ require(['config'], function() {
                     var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
                     var key = freeCells.splice(index, 1)[0];
                     game.map[key] = '*';
+                    if(!i) { game.ananas = key; }
                 }
             }
 
-            function createPlayer(game, freeCells) {
+            function createBeing(game, Entity, freeCells) {
                 var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
                 var key = freeCells.splice(index, 1)[0];
                 var parts = key.split(",");
                 var x = parseInt(parts[0]);
                 var y = parseInt(parts[1]);
-                game.player = new Player(game, { x: x, y: y });
+
+                return new Entity(game, { x: x, y: y });
             }
 
             var digger = new ROT.Map.Digger();
@@ -51,10 +54,12 @@ require(['config'], function() {
 
             drawMap(game);
 
-            createPlayer(game, freeCells);
+            game.player = createBeing(game, Player, freeCells);
+            game.pedro = createBeing(game, Pedro, freeCells);
         }
 
         var Game = {
+            ananas: null,
             display: null,
             engine: null,
             init: function() {
@@ -65,11 +70,13 @@ require(['config'], function() {
 
                 var scheduler = new ROT.Scheduler.Simple();
                 scheduler.add(this.player, true);
+                scheduler.add(this.pedro, true);
 
                 this.engine = new ROT.Engine(scheduler);
                 this.engine.start();
             },
             map: {},
+            pedro: null,
             player: null
         };
 
