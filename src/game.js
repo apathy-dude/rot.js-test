@@ -2,10 +2,10 @@ require(['config'], function() {
     'use strict';
 
     require([
-        'entity',
+        'player',
         'rot',
         'lodash'
-    ], function(Entity) {
+    ], function(Player) {
         function generateMap(game) {
 
             function drawMap(game) {
@@ -31,7 +31,7 @@ require(['config'], function() {
                 var parts = key.split(",");
                 var x = parseInt(parts[0]);
                 var y = parseInt(parts[1]);
-                game.player = new Entity(game, { x: x, y: y }, { symbol: '@', color: '#ff0' });
+                game.player = new Player(game, { x: x, y: y });
             }
 
             var digger = new ROT.Map.Digger();
