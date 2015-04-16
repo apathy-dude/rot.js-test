@@ -7,7 +7,7 @@ module.exports = function(grunt) {
                 }
             },
             jshint: {
-                files: [ 'Gruntfile.js', 'src/game.js', 'tests/**/*.js' ]
+                files: [ 'Gruntfile.js', 'src*/**/*.js', 'tests/**/*.js' ]
             },
             mochaTest: {
                 test: {
@@ -18,11 +18,23 @@ module.exports = function(grunt) {
                 }
             },
             requirejs: {
-                compile: {
+                compile1: {
                     options: {
-                        baseUrl: 'src/',
-                        out: 'bin/<%= pkg.name %>.js',
-                        mainConfigFile: 'src/config.js',
+                        baseUrl: 'src1/',
+                        out: 'bin/<%= pkg.name %>.1.js',
+                        mainConfigFile: 'src1/config.js',
+                        include: ['game'],
+                        insertRequire: ['game'],
+                        findNestedDependencies: true,
+                        preserveLicenseComments: false,
+                        wrap: true
+                    }
+                },
+                compile2: {
+                    options: {
+                        baseUrl: 'src2/',
+                        out: 'bin/<%= pkg.name %>.2.js',
+                        mainConfigFile: 'src2/config.js',
                         include: ['game'],
                         insertRequire: ['game'],
                         findNestedDependencies: true,
@@ -33,18 +45,16 @@ module.exports = function(grunt) {
             },
   //          toArray: {},
             uglify: {
-                options: {
-                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-                },
                 dist: {
                     files: {
-                        'bin/<%= pkg.name %>.min.js': ['bin/<%=pkg.name%>.js']
+                        'bin/<%= pkg.name %>.1.min.js': ['bin/<%=pkg.name%>.1.js'],
+                        'bin/<%= pkg.name %>.2.min.js': ['bin/<%=pkg.name%>.2.js'],
                     }
                 }
             },
             watch: {
                 build: {
-                    files: [ 'src/**/*.js' ],
+                    files: [ 'src*/**/*.js' ],
                     tasks: [ 'test' ]
                 }
             }
