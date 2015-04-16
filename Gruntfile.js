@@ -42,18 +42,40 @@ module.exports = function(grunt) {
                         wrap: true
                     }
                 },
+                compile3: {
+                    options: {
+                        baseUrl: 'src3/',
+                        out: 'bin/<%= pkg.name %>.3.js',
+                        mainConfigFile: 'src3/config.js',
+                        include: ['game'],
+                        insertRequire: ['game'],
+                        findNestedDependencies: true,
+                        preserveLicenseComments: false,
+                        wrap: true
+                    }
+                },
             },
-  //          toArray: {},
+            toArray: {
+                states3: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src3/states.js': ['src3/states/**/*.js']
+                    }
+                }
+            },
             uglify: {
                 dist: {
                     files: {
                         'bin/<%= pkg.name %>.1.min.js': ['bin/<%=pkg.name%>.1.js'],
                         'bin/<%= pkg.name %>.2.min.js': ['bin/<%=pkg.name%>.2.js'],
+                        'bin/<%= pkg.name %>.3.min.js': ['bin/<%=pkg.name%>.3.js'],
                     }
                 }
             },
             watch: {
-                build: {
+                test: {
                     files: [ 'src*/**/*.js' ],
                     tasks: [ 'test' ]
                 }
@@ -66,6 +88,7 @@ module.exports = function(grunt) {
         var data = [];
 
         var options = this.options();
+        var states = this.target.slice(0, 6) === 'states';
 
         this.files.forEach(function(file) {
             file.src.filter(function(filepath) {
@@ -76,14 +99,36 @@ module.exports = function(grunt) {
 
                 return (options.getFiles && isFile) || (options.getFolders && !isFile);
             }).map(function(filepath) {
-                data.push('"' + filepath + '"');
+                if(states) {
+                    var state = filepath.split('/');
+                    state = state[state.length - 1].split('.')[0];
+
+                    data.push(state);
+                }
+                else {
+                    data.push('"' + filepath + '"');
+                }
+
                 grunt.log.ok(filepath);
             });
 
-            grunt.file.write(file.dest, 'module.exports = [' + data + ' ];');
+            if(states) {
+                var dataString = '';
+                var stateList = [];
+                for(var d in data) {
+                    var state = data[d];
+                    stateList.push('"./states/' + state + '"');
+                    dataString += 'game.state.add("' + state + '",' + state + ');';
+                }
+
+                grunt.file.write(file.dest, 'define([' + stateList + '], function(' + data + ') {' + dataString + '});');
+            }
+            else {
+                grunt.file.write(file.dest, 'define(function() { return [' + data + ' ]; });');
+            }
         });
     });
 
-    grunt.registerTask('default', [ /*'toArray',*/ 'jshint', 'mochaTest', 'clean', 'requirejs', 'uglify' ]);
-    grunt.registerTask('test', [ 'jshint', 'mochaTest' ]);
+    grunt.registerTask('default', [ 'toArray', 'jshint', 'mochaTest', 'clean', 'requirejs', 'uglify' ]);
+    grunt.registerTask('test', [ 'toArray', 'jshint', 'mochaTest' ]);
 };
