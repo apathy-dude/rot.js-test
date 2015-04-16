@@ -56,6 +56,9 @@ require(['config'], function() {
 
             game.player = createBeing(game, Player, freeCells);
             game.pedro = createBeing(game, Pedro, freeCells);
+
+            game.player.draw();
+            game.pedro.draw();
         }
 
         var Game = {
