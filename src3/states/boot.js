@@ -5,15 +5,28 @@ define([
     ], function(Player, Pedro, lightPassConstructor) {
 
     return {
+        init: function() {
+        },
+        preload: function() {
+            game.load.image('boy', 'assets/jumping-boy.png');
+            game.load.image('mob', 'assets/monster-sprite.png');
+            game.load.spritesheet('tiles', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png', 16, 16, -1, 0, 1);
+        },
         create: function() {
+            //var floorTexture = game.add.sprite(0, 0, 'tiles', 6);
+            //var chestTexture = game.add.sprite(16, -4, 'tiles', 414);
 
             function generateMap(game) {
                 function generateBoxes(game, freeCells) {
                     for(var i = 0; i < 10; i++) {
                         var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
                         var key = freeCells.splice(index, 1)[0];
-                        game.map[key] = '*';
-                        if(!i) { game.ananas = key; }
+                        var split = key.split(',');
+                        var x = Number.parseInt(split[0]);
+                        var y = Number.parseInt(split[1]);
+                        game.data.map[key].chest = game.add.sprite(x * 16, y * 16 - 4, 'tiles', 414);
+                        game.data.map[key].chest.alpha = 0;
+                        if(!i) { game.data.ananas = key; }
                     }
                 }
 
@@ -24,10 +37,10 @@ define([
                     var x = parseInt(parts[0]);
                     var y = parseInt(parts[1]);
 
-                    return new Entity(game, { x: x, y: y });
+                    return new Entity(game.data, { x: x, y: y });
                 }
 
-                var digger = new ROT.Map.Digger();
+                var digger = new ROT.Map.Digger(50 , 37);
                 var freeCells = [];
 
                 var digCallback = function(x, y, value) {
@@ -36,19 +49,19 @@ define([
 
                     var key = x + ',' + y;
                     freeCells.push(key);
-                    game.map[key] = '.';
+                    game.data.map[key] = { tile: game.add.sprite(x * 16, y * 16, 'tiles', 6) };
+                    game.data.map[key].tile.alpha = 0;
                 };
                 digger.create(digCallback.bind(game));
 
                 generateBoxes(game, freeCells);
 
-                game.player = createBeing(game, Player, freeCells);
-                game.pedro = createBeing(game, Pedro, freeCells);
+                game.data.player = createBeing(game, Player, freeCells);
+                game.data.pedro = createBeing(game, Pedro, freeCells);
             }
 
-            var Game = {
+            game.data = {
                 ananas: null,
-                display: null,
                 draw: function draw() {
                     var lightRadius = 5;
 
@@ -58,6 +71,15 @@ define([
                         }
 
                         game.shadowcaster.compute(target.position.x, target.position.y, lightRadius, lightHandle);
+                    }
+
+                    for(var l = 0; l < this.lit.length; l++) {
+                        var lKey = this.lit[l];
+                        if(!this.map[lKey])
+                            continue;
+                        this.map[lKey].tile.alpha = 0;
+                        if(this.map[lKey].chest)
+                            this.map[lKey].chest.alpha = 0;
                     }
 
                     this.lit = [];
@@ -72,14 +94,13 @@ define([
 
                     var playerVisible = _.intersection(this.lit, fov);
 
-                    this.display.clear();
-
                     for(var k = 0; k < playerVisible.length; k++) {
                         var key = playerVisible[k];
-                        var parts = key.split(',');
-                        var x = parseInt(parts[0]);
-                        var y = parseInt(parts[1]);
-                        this.display.draw(x, y, this.map[key]);
+                        if(!this.map[key])
+                            continue;
+                        this.map[key].tile.alpha = 1;
+                        if(this.map[key].chest)
+                            this.map[key].chest.alpha = 1;
                     }
 
                     this.player.draw();
@@ -88,23 +109,10 @@ define([
 
                     if(_.indexOf(playerVisible, pedroKey) > -1)
                         this.pedro.draw();
+                    else
+                        this.pedro.sprite.alpha = 0;
                 },
                 engine: null,
-                init: function init() {
-                    this.display = new ROT.Display();
-                    //document.body.appendChild(this.display.getContainer());
-
-                    generateMap(this);
-
-                    var scheduler = new ROT.Scheduler.Simple();
-                    scheduler.add(this.player, true);
-                    scheduler.add(this.pedro, true);
-
-                    this.shadowcaster = new ROT.FOV.RecursiveShadowcasting(lightPassConstructor(this.map));
-
-                    this.engine = new ROT.Engine(scheduler);
-                    this.engine.start();
-                },
                 lit: [],
                 map: {},
                 pedro: null,
@@ -112,12 +120,29 @@ define([
                 shadowcaster: null
             };
 
-            Game.init();
+            generateMap(game);
 
-            window.game.data = Game;
+            var scheduler = new ROT.Scheduler.Simple();
+            scheduler.add(game.data.player, true);
+            scheduler.add(game.data.pedro, true);
+
+            game.data.shadowcaster = new ROT.FOV.RecursiveShadowcasting(lightPassConstructor(game.data.map));
+
+            game.data.engine = new ROT.Engine(scheduler);
+            game.data.engine.start();
 
         },
         update: function() {
+        },
+        render: function() {
+        },
+        paused: function() {
+        },
+        pausedUpdate: function() {
+        },
+        resize: function() {
+        },
+        shutdown: function() {
         }
     };
 

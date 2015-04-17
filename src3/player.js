@@ -12,7 +12,7 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
     };
 
     function Player(game, pos) {
-        Entity.call(this, game, pos, { symbol: '@', color: '#ff0' });
+        Entity.call(this, game, pos, window.game.add.sprite(pos.x * 16, pos.y * 16, 'boy'));
     }
 
     Player.prototype = Object.create(Entity.prototype, {
@@ -28,7 +28,8 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
                 var code = e.keyCode;
                 if(code === 13 || code === 32) {
                     var key = this.position.x + ',' + this.position.y;
-                    if(this.game.map[key] !== '*') {
+                    console.log(this.game.ananas);
+                    if(!this.game.map[key].chest) {
                         alert('There is no box here!');
                     }
                     else if(key === this.game.ananas) {
@@ -52,6 +53,9 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
 
                 this.position.x = newX;
                 this.position.y = newY;
+
+                this.sprite.position.x = newX * 16;
+                this.sprite.position.y = newY * 16;
 
                 window.removeEventListener('keydown', this);
 

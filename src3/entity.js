@@ -13,8 +13,7 @@ define(function() {
         },
         act: function() { /* Placeholder */ },
         draw: function() {
-            //TODO
-            this.game.display.draw(this.position.x, this.position.y, this.sprite.symbol, this.sprite.color);
+            this.sprite.alpha = 1;
         }
     };
 

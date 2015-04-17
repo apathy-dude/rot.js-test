@@ -1,7 +1,7 @@
 define(['entity'], function(Entity) {
 
     function Pedro(game, pos) {
-        Entity.call(this, game, pos, { symbol: 'P', color: 'red' });
+        Entity.call(this, game, pos, window.game.add.sprite(pos.x * 16, pos.y * 16, 'mob'));
     }
 
     function pathfind(game, pedro) {
@@ -34,6 +34,8 @@ define(['entity'], function(Entity) {
                 else {
                     this.position.x = path[0][0];
                     this.position.y = path[0][1];
+                    this.sprite.position.x = path[0][0] * 16;
+                    this.sprite.position.y = path[0][1] * 16;
                 }
             }
         }
