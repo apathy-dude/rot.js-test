@@ -28,7 +28,6 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
                 var code = e.keyCode;
                 if(code === 13 || code === 32) {
                     var key = this.position.x + ',' + this.position.y;
-                    console.log(this.game.ananas);
                     if(!this.game.map[key].chest) {
                         alert('There is no box here!');
                     }
@@ -49,7 +48,7 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
                 var newY = this.position.y + diff[1];
 
                 var newKey = newX + ',' + newY;
-                if(!(newKey in this.game.map)) return;
+                if(!(newKey in this.game.map) || !this.game.map[newKey].walkable) return;
 
                 this.position.x = newX;
                 this.position.y = newY;

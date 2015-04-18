@@ -9,7 +9,8 @@ define(['entity'], function(Entity) {
         var path = [];
 
         function passableCallback(x, y) {
-            return (x + ',' + y in game.map);
+            var k = x + ',' + y;
+            return (k in game.map && game.map[k].walkable);
         }
 
         function pathCallback(x, y) {

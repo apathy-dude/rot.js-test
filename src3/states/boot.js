@@ -14,6 +14,7 @@ define([
         },
         create: function() {
             //var floorTexture = game.add.sprite(0, 0, 'tiles', 6);
+            //var wallTexture = game.add.sprite(0, 0, 'tiles', 7);
             //var chestTexture = game.add.sprite(16, -4, 'tiles', 414);
 
             function generateMap(game) {
@@ -49,10 +50,27 @@ define([
 
                     var key = x + ',' + y;
                     freeCells.push(key);
-                    game.data.map[key] = { tile: game.add.sprite(x * 16, y * 16, 'tiles', 6) };
+                    game.data.map[key] = { walkable: true, seeThrough: true, tile: game.add.sprite(x * 16, y * 16, 'tiles', 6) };
                     game.data.map[key].tile.alpha = 0;
                 };
                 digger.create(digCallback.bind(game));
+
+                for(var t in game.data.map) {
+                    var split = t.split(',');
+                    var x = Number.parseInt(split[0]);
+                    var y = Number.parseInt(split[1]);
+                    for(var tX = -1; tX < 2; tX++) {
+                        for(var tY = -1; tY < 2; tY++) {
+                            var newX = x + tX;
+                            var newY = y + tY;
+                            if(!game.data.map[newX + ',' + newY]) {
+                                var k = newX + ',' + newY;
+                                game.data.map[k] = { tile: game.add.sprite(newX * 16, newY * 16, 'tiles', 7) };
+                                game.data.map[k].tile.alpha = 0;
+                            }
+                        }
+                    }
+                }
 
                 generateBoxes(game, freeCells);
 

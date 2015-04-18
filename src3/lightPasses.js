@@ -1,7 +1,8 @@
 define(function() {
     return function lightPassesConstructor(map) {
         return function lightPasses(x, y) {
-            return x + ',' + y in map;
+            var k = x + ',' + y;
+            return k in map && map[k].seeThrough;
         };
     };
 });
