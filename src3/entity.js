@@ -1,7 +1,7 @@
 define(function() {
     
-    function Entity(game, pos, sprite) {
-        this.game = game;
+    function Entity(gameData, pos, sprite) {
+        this.gameData = gameData;
         this.position = pos;
         this.sprite = sprite;
     }
@@ -11,10 +11,7 @@ define(function() {
             this.position.x += x;
             this.position.y += y;
         },
-        act: function() { /* Placeholder */ },
-        draw: function() {
-            this.sprite.alpha = 1;
-        }
+        act: function() { throw "Not implemented"; },
     };
 
     return Entity;

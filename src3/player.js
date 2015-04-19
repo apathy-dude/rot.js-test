@@ -11,15 +11,14 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
         36: 7,
     };
 
-    function Player(game, pos) {
-        Entity.call(this, game, pos, window.game.add.sprite(pos.x * 16, pos.y * 16, 'boy'));
+    function Player(gameData, pos) {
+        Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16, 'boy'));
     }
 
     Player.prototype = Object.create(Entity.prototype, {
         act: {
             value: function() {
-                this.game.engine.lock();
-                this.game.draw();
+                this.gameData.engine.lock();
                 window.addEventListener('keydown', this);
             }
         },
@@ -28,12 +27,12 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
                 var code = e.keyCode;
                 if(code === 13 || code === 32) {
                     var key = this.position.x + ',' + this.position.y;
-                    if(!this.game.map[key].chest) {
+                    if(!this.gameData.map[key].chest) {
                         alert('There is no box here!');
                     }
-                    else if(key === this.game.ananas) {
+                    else if(key === this.gameData.ananas) {
                         alert('Hooray! You found an ananas and won this game.');
-                        this.game.engine.lock();
+                        this.gameData.engine.lock();
                         window.removeEventListener('keydown', this);
                     }
                     else {
@@ -48,7 +47,7 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
                 var newY = this.position.y + diff[1];
 
                 var newKey = newX + ',' + newY;
-                if(!(newKey in this.game.map) || !this.game.map[newKey].walkable) return;
+                if(!(newKey in this.gameData.map) || !this.gameData.map[newKey].walkable) return;
 
                 this.position.x = newX;
                 this.position.y = newY;
@@ -58,7 +57,7 @@ define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
 
                 window.removeEventListener('keydown', this);
 
-                this.game.engine.unlock();
+                this.gameData.engine.unlock();
             }
         }
     });

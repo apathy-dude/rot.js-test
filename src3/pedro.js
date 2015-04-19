@@ -1,16 +1,16 @@
 define(['entity'], function(Entity) {
 
-    function Pedro(game, pos) {
-        Entity.call(this, game, pos, window.game.add.sprite(pos.x * 16, pos.y * 16, 'mob'));
+    function Pedro(gameData, pos) {
+        Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16, 'mob'));
     }
 
-    function pathfind(game, pedro) {
-        var target = game.player.position;
+    function pathfind(gameData, pedro) {
+        var target = gameData.player.position;
         var path = [];
 
         function passableCallback(x, y) {
             var k = x + ',' + y;
-            return (k in game.map && game.map[k].walkable);
+            return (k in gameData.map && gameData.map[k].walkable);
         }
 
         function pathCallback(x, y) {
@@ -26,10 +26,10 @@ define(['entity'], function(Entity) {
     Pedro.prototype = Object.create(Entity.prototype, {
         act: {
             value: function() {
-                var path = pathfind(this.game, this);
+                var path = pathfind(this.gameData, this);
                 path.shift();
                 if(path.length <= 1) {
-                    this.game.engine.lock();
+                    this.gameData.engine.lock();
                     alert('Game over - you were captured by Pedro!');
                 }
                 else {
