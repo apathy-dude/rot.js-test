@@ -4,6 +4,7 @@ define(function() {
         this.gameData = gameData;
         this.position = pos;
         this.sprite = sprite;
+        this.lightRange = 0;
     }
 
     Entity.prototype = {

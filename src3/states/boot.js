@@ -1,13 +1,14 @@
 define([
     '../player',
     '../pedro',
+    '../torch',
     '../lightPasses'
-    ], function(Player, Pedro, lightPassConstructor) {
+    ], function(Player, Pedro, Torch, lightPassConstructor) {
 
     var data;
-    var lightRadius = 5; //TODO: remove temp hardcoded value
 
     function generateMap(data) {
+        //TODO: Move to entity list
         function generateBoxes(data, freeCells) {
             for(var i = 0; i < 10; i++) {
                 var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
@@ -18,6 +19,17 @@ define([
                 data.map[key].chest = game.add.sprite(x * 16, y * 16 - 4, 'tiles', 414);
                 data.map[key].chest.alpha = 0;
                 if(!i) { data.ananas = key; }
+            }
+        }
+
+        function generateTorches(data, freeCells) {
+            for(var i = 0; i < 10; i++) {
+                var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+                var key = freeCells.splice(index, 1)[0];
+                var split = key.split(',');
+                var x = Number.parseInt(split[0]);
+                var y = Number.parseInt(split[1]);
+                data.entities.push(createBeing(data, Torch, freeCells));
             }
         }
 
@@ -40,6 +52,7 @@ define([
 
             var key = x + ',' + y;
             freeCells.push(key);
+            //TODO: Create new Tile, Floor, and Wall classes
             data.map[key] = { walkable: true, seeThrough: true, tile: game.add.sprite(x * 16, y * 16, 'tiles', 6) };
             data.map[key].tile.alpha = 0;
         };
@@ -62,9 +75,11 @@ define([
             }
         }
 
+        generateTorches(data, freeCells);
         generateBoxes(data, freeCells);
 
         data.player = createBeing(data, Player, freeCells);
+        data.player.lightRange = 3;
 
         data.entities.push(data.player);
         data.entities.push(createBeing(data, Pedro, freeCells));
@@ -82,15 +97,15 @@ define([
         function lightHandle(x, y, r, visibility) {
             var key = x + ',' + y;
             light.tiles.push(key);
-            light.amount[key] = 1 - r / lightRadius;
+            light.amount[key] = 1 - r / target.lightRange;
         }
 
-        gameData.shadowcaster.compute(target.position.x, target.position.y, lightRadius, lightHandle);
+        gameData.shadowcaster.compute(target.position.x, target.position.y, target.lightRange, lightHandle);
 
         return light;
     }
 
-    function unsetLight(data) {
+    function updateLight(data) {
         for(var l = 0; l < data.lit.length; l++) {
             var lKey = data.lit[l];
             if(!data.map[lKey])
@@ -102,6 +117,31 @@ define([
 
         data.lit = [];
         data.lightStrength = {};
+
+        for(var en in data.entities) {
+            if(data.entities[en].lightRange === 0)
+                continue;
+            var lit = calculateEntityLight(data, data.entities[en]);
+            data.lit = data.lit.concat(lit.tiles);
+            for(var ls in lit.amount) {
+                if(!data.lightStrength[ls])
+                    data.lightStrength[ls] = 0;
+                data.lightStrength[ls] += lit.amount[ls];
+                if(data.lightStrength[ls] > 1)
+                    data.lightStrength[ls] = 1;
+            }
+        }
+    }
+
+    function getVisible(data, target) {
+        var fov = [];
+        var visible;
+
+        data.shadowcaster.compute(target.position.x, target.position.y, 50, function(x, y, r, visibility) {
+            fov.push(x + ',' + y);
+        });
+
+        return _.intersection(data.lit, fov);
     }
 
     return {
@@ -140,33 +180,12 @@ define([
 
         },
         update: function() {
-            var playerVisible;
-            var fov = [];
+            updateLight(data);
 
-            unsetLight(data);
+            var visible = getVisible(data, data.player);
 
-            for(var en in data.entities) {
-                if(en > 0)
-                    continue;
-                var lit = calculateEntityLight(data, data.entities[en]);
-                data.lit = data.lit.concat(lit.tiles);
-                for(var ls in lit.amount) {
-                    if(!data.lightStrength[ls])
-                        data.lightStrength[ls] = 0;
-                    data.lightStrength[ls] += lit.amount[ls];
-                    if(data.lightStrength[ls] > 1)
-                        data.lightStrength[ls] = 1;
-                }
-            }
-
-            data.shadowcaster.compute(data.player.position.x, data.player.position.y, 50, function(x, y, r, visibility) {
-                fov.push(x + ',' + y);
-            });
-
-            playerVisible = _.intersection(data.lit, fov);
-
-            for(var k = 0; k < playerVisible.length; k++) {
-                var key = playerVisible[k];
+            for(var k = 0; k < visible.length; k++) {
+                var key = visible[k];
                 if(!data.map[key])
                     continue;
                 data.map[key].tile.alpha = data.lightStrength[key];
@@ -179,7 +198,7 @@ define([
                 if(!ent || !ent.position)
                     return;
                 var pos = ent.position.x + ',' + ent.position.y;
-                if(_.indexOf(playerVisible, pos) > -1)
+                if(_.indexOf(visible, pos) > -1)
                     ent.sprite.alpha = data.lightStrength[pos];
                 else
                     ent.sprite.alpha = 0;

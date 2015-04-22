@@ -1,4 +1,4 @@
-define(['entity', 'lightPasses'], function(Entity, lightPassConstructor) {
+define(['entity'], function(Entity) {
 
     var keyMap = {
         38: 0,
