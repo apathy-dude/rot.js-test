@@ -2,14 +2,14 @@ define(function() {
 
     function Tile(game, pos, sprite) {
         this.game = game;
-        this.position = position;
+        this.position = pos;
         this.sprite = sprite;
+
+        this.walkable = false;
+        this.seeThrough = false;
     }
 
     Tile.prototype = {
-        draw: function() {
-            //TODO
-        }
     };
 
     return Tile;

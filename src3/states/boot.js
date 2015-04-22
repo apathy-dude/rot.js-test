@@ -2,8 +2,10 @@ define([
     '../player',
     '../pedro',
     '../torch',
+    '../floor',
+    '../wall',
     '../lightPasses'
-    ], function(Player, Pedro, Torch, lightPassConstructor) {
+    ], function(Player, Pedro, Torch, Floor, Wall, lightPassConstructor) {
 
     var data;
 
@@ -52,9 +54,8 @@ define([
 
             var key = x + ',' + y;
             freeCells.push(key);
-            //TODO: Create new Tile, Floor, and Wall classes
-            data.map[key] = { walkable: true, seeThrough: true, tile: game.add.sprite(x * 16, y * 16, 'tiles', 6) };
-            data.map[key].tile.alpha = 0;
+            data.map[key] = new Floor(game, { x: x, y: y });
+            data.map[key].sprite.alpha = 0;
         };
         digger.create(digCallback.bind(data));
 
@@ -68,8 +69,8 @@ define([
                     var newY = y + tY;
                     if(!data.map[newX + ',' + newY]) {
                         var k = newX + ',' + newY;
-                        data.map[k] = { tile: game.add.sprite(newX * 16, newY * 16, 'tiles', 7) };
-                        data.map[k].tile.alpha = 0;
+                        data.map[k] = new Wall(game, { x: newX, y: newY });
+                        data.map[k].sprite.alpha = 0;
                     }
                 }
             }
@@ -110,7 +111,7 @@ define([
             var lKey = data.lit[l];
             if(!data.map[lKey])
                 continue;
-            data.map[lKey].tile.alpha = 0;
+            data.map[lKey].sprite.alpha = 0;
             if(data.map[lKey].chest)
                 data.map[lKey].chest.alpha = 0;
         }
@@ -188,7 +189,7 @@ define([
                 var key = visible[k];
                 if(!data.map[key])
                     continue;
-                data.map[key].tile.alpha = data.lightStrength[key];
+                data.map[key].sprite.alpha = data.lightStrength[key];
                 if(data.map[key].chest)
                     data.map[key].chest.alpha = data.lightStrength[key];
             }
