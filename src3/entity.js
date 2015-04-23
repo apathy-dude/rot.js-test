@@ -13,6 +13,7 @@ define(function() {
             this.position.y += y;
         },
         act: function() { throw "Not implemented"; },
+        interact: function(source) {}
     };
 
     return Entity;

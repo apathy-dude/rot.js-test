@@ -2,10 +2,11 @@ define([
     '../player',
     '../pedro',
     '../torch',
+    '../chest',
     '../floor',
     '../wall',
     '../lightPasses'
-    ], function(Player, Pedro, Torch, Floor, Wall, lightPassConstructor) {
+    ], function(Player, Pedro, Torch, Chest, Floor, Wall, lightPassConstructor) {
 
     var data;
 
@@ -13,26 +14,16 @@ define([
         //TODO: Move to entity list
         function generateBoxes(data, freeCells) {
             for(var i = 0; i < 10; i++) {
-                var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-                var key = freeCells.splice(index, 1)[0];
-                var split = key.split(',');
-                var x = Number.parseInt(split[0]);
-                var y = Number.parseInt(split[1]);
-                data.map[key].chest = game.add.sprite(x * 16, y * 16 - 4, 'tiles', 414);
-                data.map[key].chest.alpha = 0;
-                if(!i) { data.ananas = key; }
+                var chest = createBeing(data, Chest, freeCells);
+                chest.sprite.alpha = 0;
+                data.entities.push(chest);
+                if(!i) { data.ananas = chest.position.x + ',' + chest.position.y; }
             }
         }
 
         function generateTorches(data, freeCells) {
-            for(var i = 0; i < 10; i++) {
-                var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-                var key = freeCells.splice(index, 1)[0];
-                var split = key.split(',');
-                var x = Number.parseInt(split[0]);
-                var y = Number.parseInt(split[1]);
+            for(var i = 0; i < 10; i++)
                 data.entities.push(createBeing(data, Torch, freeCells));
-            }
         }
 
         function createBeing(data, Entity, freeCells) {

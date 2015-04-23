@@ -27,16 +27,10 @@ define(['entity'], function(Entity) {
                 var code = e.keyCode;
                 if(code === 13 || code === 32) {
                     var key = this.position.x + ',' + this.position.y;
-                    if(!this.gameData.map[key].chest) {
-                        alert('There is no box here!');
-                    }
-                    else if(key === this.gameData.ananas) {
-                        alert('Hooray! You found an ananas and won this game.');
-                        this.gameData.engine.lock();
-                        window.removeEventListener('keydown', this);
-                    }
-                    else {
-                        alert('This box is empty');
+                    for(var en in this.gameData.entities) {
+                        var entity = this.gameData.entities[en];
+                        if(entity.position && entity.position.y === this.position.y && entity.position.x === this.position.x)
+                            entity.interact(this);
                     }
                 }
 
