@@ -63,6 +63,22 @@ module.exports = function(grunt) {
                     files: {
                         'src3/states.js': ['src3/states/**/*.js']
                     }
+                },
+                tiles3: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src3/tile.js': ['src3/tile/**/*.js']
+                    }
+                },
+                entity3: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src3/entity.js': ['src3/entity/**/*.js']
+                    }
                 }
             },
             uglify: {
@@ -99,32 +115,34 @@ module.exports = function(grunt) {
 
                 return (options.getFiles && isFile) || (options.getFolders && !isFile);
             }).map(function(filepath) {
-                if(states) {
-                    var state = filepath.split('/');
-                    state = state[state.length - 1].split('.')[0];
+                var state = filepath.split('/');
+                state = state[state.length - 1].split('.')[0];
 
-                    data.push(state);
-                }
-                else {
-                    data.push('"' + filepath + '"');
-                }
+                data.push(state);
 
                 grunt.log.ok(filepath);
             });
 
+            var dataString = '';
+            var itemList = [];
             if(states) {
-                var dataString = '';
-                var stateList = [];
                 for(var d in data) {
                     var state = data[d];
-                    stateList.push('"./states/' + state + '"');
+                    itemList.push('"./states/' + state + '"');
                     dataString += 'game.state.add("' + state + '",' + state + ');';
                 }
 
-                grunt.file.write(file.dest, 'define([' + stateList + '], function(' + data + ') {' + dataString + '});');
+                grunt.file.write(file.dest, 'define([' + itemList + '], function(' + data + ') {' + dataString + '});');
             }
             else {
-                grunt.file.write(file.dest, 'define(function() { return [' + data + ' ]; });');
+                var path = file.src[0].split('/')[1];
+                for(var i in data) {
+                    var item = data[i];
+                    var upper = item.charAt(0).toUpperCase() + item.slice(1);
+                    itemList.push('"./' + path + '/' + item + '"');
+                    dataString += upper + ': ' + item + ', ';
+                }
+                grunt.file.write(file.dest, 'define([' + itemList + '], function(' + data + ') { return { ' + dataString + '}; });');
             }
         });
     });

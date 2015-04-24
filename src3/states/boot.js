@@ -1,20 +1,15 @@
 define([
-    '../player',
-    '../pedro',
-    '../torch',
-    '../chest',
-    '../floor',
-    '../wall',
+    '../entity',
+    '../tile',
     '../lightPasses'
-    ], function(Player, Pedro, Torch, Chest, Floor, Wall, lightPassConstructor) {
+    ], function(entity, tile, lightPassConstructor) {
 
     var data;
 
     function generateMap(data) {
-        //TODO: Move to entity list
         function generateBoxes(data, freeCells) {
             for(var i = 0; i < 10; i++) {
-                var chest = createBeing(data, Chest, freeCells);
+                var chest = createBeing(data, entity.Chest, freeCells);
                 chest.sprite.alpha = 0;
                 data.entities.push(chest);
                 if(!i) { data.ananas = chest.position.x + ',' + chest.position.y; }
@@ -23,7 +18,7 @@ define([
 
         function generateTorches(data, freeCells) {
             for(var i = 0; i < 10; i++)
-                data.entities.push(createBeing(data, Torch, freeCells));
+                data.entities.push(createBeing(data, entity.Torch, freeCells));
         }
 
         function createBeing(data, Entity, freeCells) {
@@ -45,7 +40,7 @@ define([
 
             var key = x + ',' + y;
             freeCells.push(key);
-            data.map[key] = new Floor(game, { x: x, y: y });
+            data.map[key] = new tile.Floor(game, { x: x, y: y });
             data.map[key].sprite.alpha = 0;
         };
         digger.create(digCallback.bind(data));
@@ -60,7 +55,7 @@ define([
                     var newY = y + tY;
                     if(!data.map[newX + ',' + newY]) {
                         var k = newX + ',' + newY;
-                        data.map[k] = new Wall(game, { x: newX, y: newY });
+                        data.map[k] = new tile.Wall(game, { x: newX, y: newY });
                         data.map[k].sprite.alpha = 0;
                     }
                 }
@@ -70,11 +65,11 @@ define([
         generateTorches(data, freeCells);
         generateBoxes(data, freeCells);
 
-        data.player = createBeing(data, Player, freeCells);
+        data.player = createBeing(data, entity.Player, freeCells);
         data.player.lightRange = 3;
 
         data.entities.push(data.player);
-        data.entities.push(createBeing(data, Pedro, freeCells));
+        data.entities.push(createBeing(data, entity.Pedro, freeCells));
     }
 
     function calculateEntityLight(gameData, target) {

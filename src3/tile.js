@@ -1,16 +1,1 @@
-define(function() {
-
-    function Tile(game, pos, sprite) {
-        this.game = game;
-        this.position = pos;
-        this.sprite = sprite;
-
-        this.walkable = false;
-        this.seeThrough = false;
-    }
-
-    Tile.prototype = {
-    };
-
-    return Tile;
-});
+define(["./tile/floor","./tile/tile","./tile/wall"], function(floor,tile,wall) { return { Floor: floor, Tile: tile, Wall: wall, }; });

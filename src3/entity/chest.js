@@ -1,4 +1,4 @@
-define(['entity'], function(Entity) {
+define(['./entity'], function(Entity) {
 
     function Chest(gameData, pos) {
         Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16 - 4, 'tiles', 414));

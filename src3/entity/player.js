@@ -1,4 +1,4 @@
-define(['entity'], function(Entity) {
+define(['./entity'], function(Entity) {
 
     var keyMap = {
         38: 0,
