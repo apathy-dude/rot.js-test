@@ -1,0 +1,1 @@
+define(["./states/boot"], function(boot) {game.state.add("boot",boot);});

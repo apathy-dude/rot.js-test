@@ -1,0 +1,1 @@
+define(["./tile/floor","./tile/tile","./tile/wall"], function(floor,tile,wall) { return { Floor: floor, Tile: tile, Wall: wall, }; });

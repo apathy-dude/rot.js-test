@@ -1,0 +1,1 @@
+define(["./entity/chest","./entity/entity","./entity/pedro","./entity/player","./entity/torch"], function(chest,entity,pedro,player,torch) { return { Chest: chest, Entity: entity, Pedro: pedro, Player: player, Torch: torch, }; });

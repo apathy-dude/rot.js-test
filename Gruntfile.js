@@ -54,6 +54,18 @@ module.exports = function(grunt) {
                         wrap: true
                     }
                 },
+                compile4: {
+                    options: {
+                        baseUrl: 'src4/',
+                        out: 'bin/<%= pkg.name %>.4.js',
+                        mainConfigFile: 'src4/config.js',
+                        include: ['game'],
+                        insertRequire: ['game'],
+                        findNestedDependencies: true,
+                        preserveLicenseComments: false,
+                        wrap: true
+                    }
+                },
             },
             toArray: {
                 states3: {
@@ -79,6 +91,30 @@ module.exports = function(grunt) {
                     files: {
                         'src3/entity.js': ['src3/entity/**/*.js']
                     }
+                },
+                states4: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src4/states.js': ['src4/states/**/*.js']
+                    }
+                },
+                tiles4: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src4/tile.js': ['src4/tile/**/*.js']
+                    }
+                },
+                entity4: {
+                    options: {
+                        getFiles: true
+                    },
+                    files: {
+                        'src4/entity.js': ['src4/entity/**/*.js']
+                    }
                 }
             },
             uglify: {
@@ -87,6 +123,7 @@ module.exports = function(grunt) {
                         'bin/<%= pkg.name %>.1.min.js': ['bin/<%=pkg.name%>.1.js'],
                         'bin/<%= pkg.name %>.2.min.js': ['bin/<%=pkg.name%>.2.js'],
                         'bin/<%= pkg.name %>.3.min.js': ['bin/<%=pkg.name%>.3.js'],
+                        'bin/<%= pkg.name %>.4.min.js': ['bin/<%=pkg.name%>.4.js'],
                     }
                 }
             },
