@@ -12,7 +12,7 @@ define(['./entity'], function(Entity) {
     };
 
     function Player(gameData, pos) {
-        Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16, 'boy'));
+        Entity.call(this, gameData, pos, game.add.sprite(pos.x, pos.y, 'boy'));
     }
 
     Player.prototype = Object.create(Entity.prototype, {
@@ -43,11 +43,7 @@ define(['./entity'], function(Entity) {
                 var newKey = newX + ',' + newY;
                 if(!(newKey in this.gameData.map) || !this.gameData.map[newKey].walkable) return;
 
-                this.position.x = newX;
-                this.position.y = newY;
-
-                this.sprite.position.x = newX * 16;
-                this.sprite.position.y = newY * 16;
+                this.move(diff);
 
                 window.removeEventListener('keydown', this);
 

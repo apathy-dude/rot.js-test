@@ -7,6 +7,9 @@ define([
     var data;
 
     function generateMap(data) {
+        var width = 50;
+        var height = 37;
+
         function generateBoxes(data, freeCells) {
             for(var i = 0; i < 10; i++) {
                 var chest = createBeing(data, entity.Chest, freeCells);
@@ -30,6 +33,15 @@ define([
 
             return new Entity(data, { x: x, y: y });
         }
+
+        var map = game.add.tilemap();
+        map.addTilesetImage('tiles');
+        map.tileWidth = 16;
+        map.tileWidth = 16;
+
+        var layer = map.create('main', 50, 37, 32, 32);
+
+        layer.resizeWorld();
 
         var digger = new ROT.Map.Digger(50 , 37);
         var freeCells = [];
@@ -160,6 +172,8 @@ define([
                 if(data.entities[e] && data.entities[e].act instanceof Function)
                     scheduler.add(data.entities[e], true);
 
+            game.camera.follow(data.player.sprite);
+
             data.shadowcaster = new ROT.FOV.RecursiveShadowcasting(lightPassConstructor(data.map));
 
             data.engine = new ROT.Engine(scheduler);
@@ -190,7 +204,6 @@ define([
                 else
                     ent.sprite.alpha = 0;
             }
-
         },
         render: function() {
         },

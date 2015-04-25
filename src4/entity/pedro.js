@@ -1,7 +1,7 @@
 define(['./entity'], function(Entity) {
 
     function Pedro(gameData, pos) {
-        Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16, 'mob'));
+        Entity.call(this, gameData, pos, game.add.sprite(pos.x, pos.y, 'mob'));
     }
 
     function pathfind(gameData, pedro) {
@@ -33,10 +33,11 @@ define(['./entity'], function(Entity) {
                     alert('Game over - you were captured by Pedro!');
                 }
                 else {
-                    this.position.x = path[0][0];
-                    this.position.y = path[0][1];
-                    this.sprite.position.x = path[0][0] * 16;
-                    this.sprite.position.y = path[0][1] * 16;
+                    var diff = [
+                        path[0][0] - this.position.x,
+                        path[0][1] - this.position.y
+                    ];
+                    this.move(diff);
                 }
             }
         }

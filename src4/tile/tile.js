@@ -1,9 +1,9 @@
-define(function() {
+define(['../util'], function(util) {
 
-    function Tile(game, pos, sprite) {
+    function Tile(game, pos, sprite, offset) {
         this.game = game;
         this.position = pos;
-        this.sprite = sprite;
+        this.sprite = util.gridTileToScreen(sprite, true, offset);
 
         this.walkable = false;
         this.seeThrough = false;

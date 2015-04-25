@@ -1,7 +1,7 @@
 define(['./entity'], function(Entity) {
 
     function Chest(gameData, pos) {
-        Entity.call(this, gameData, pos, game.add.sprite(pos.x * 16, pos.y * 16 - 4, 'tiles', 414));
+        Entity.call(this, gameData, pos, game.add.sprite(pos.x, pos.y, 'tiles', 414), { y: -0.25 });
     }
 
     Chest.prototype = Object.create(Entity.prototype, {
