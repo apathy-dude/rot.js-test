@@ -35,11 +35,11 @@ define([
         }
 
         var map = game.add.tilemap();
-        map.addTilesetImage('tiles');
-        map.tileWidth = 16;
-        map.tileWidth = 16;
+        map.addTilesetImage('layer', 'tiles', 16, 16, 0, 1);
 
-        var layer = map.create('main', 50, 37, 32, 32);
+        var layer = map.create('main', 50, 37, 16, 16);
+        layer.scale.x = 2;
+        layer.scale.y = 2;
 
         layer.resizeWorld();
 
@@ -52,7 +52,7 @@ define([
 
             var key = x + ',' + y;
             freeCells.push(key);
-            data.map[key] = new tile.Floor(game, { x: x, y: y });
+            data.map[key] = new tile.Floor(game, { x: x, y: y }, map, layer);
             data.map[key].sprite.alpha = 0;
         };
         digger.create(digCallback.bind(data));
@@ -67,7 +67,7 @@ define([
                     var newY = y + tY;
                     if(!data.map[newX + ',' + newY]) {
                         var k = newX + ',' + newY;
-                        data.map[k] = new tile.Wall(game, { x: newX, y: newY });
+                        data.map[k] = new tile.Wall(game, { x: newX, y: newY }, map, layer);
                         data.map[k].sprite.alpha = 0;
                     }
                 }
@@ -150,6 +150,7 @@ define([
             game.load.image('boy', 'assets/jumping-boy.png');
             game.load.image('mob', 'assets/monster-sprite.png');
             game.load.spritesheet('tiles', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png', 16, 16, -1, 0, 1);
+            game.load.image('tile-layer', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png');
         },
         create: function() {
 

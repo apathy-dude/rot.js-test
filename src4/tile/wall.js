@@ -1,7 +1,7 @@
 define(['./tile'], function(Tile) {
 
-    function Wall(game, pos) {
-        Tile.call(this, game, pos, game.add.sprite(pos.x, pos.y, 'tiles', 7));
+    function Wall(game, pos, map, layer) {
+        Tile.call(this, game, pos, map.putTile(7, pos.x, pos.y, layer));
     }
 
     Wall.prototype = Object.create(Tile.prototype, {

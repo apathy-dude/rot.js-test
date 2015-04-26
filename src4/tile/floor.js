@@ -1,6 +1,6 @@
 define(['./tile'], function(Tile) {
-    function Floor(game, pos) {
-        Tile.call(this, game, pos, game.add.sprite(pos.x, pos.y, 'tiles', 6));
+    function Floor(game, pos, map, layer) {
+        Tile.call(this, game, pos, map.putTile(6, pos.x, pos.y, layer));
         this.walkable = true;
         this.seeThrough = true;
     }
