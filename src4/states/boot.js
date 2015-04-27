@@ -4,7 +4,7 @@ define([
     '../lightPasses'
     ], function(entity, tile, lightPassConstructor) {
 
-    var data;
+    var data, layer;
 
     function generateMap(data) {
         var width = 50;
@@ -37,7 +37,7 @@ define([
         var map = game.add.tilemap();
         map.addTilesetImage('layer', 'tiles', 16, 16, 0, 1);
 
-        var layer = map.create('main', 50, 37, 16, 16);
+        layer = map.create('main', 50, 37, 16, 16);
         layer.scale.x = 2;
         layer.scale.y = 2;
 
@@ -186,6 +186,8 @@ define([
                 var key = visible[k];
                 data.map[key].sprite.alpha = data.lightStrength[key];
             }
+
+            layer.dirty = true;
 
             for(var e in data.entities) {
                 var ent = data.entities[e];
