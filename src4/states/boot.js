@@ -110,8 +110,6 @@ define([
             if(!data.map[lKey])
                 continue;
             data.map[lKey].sprite.alpha = 0;
-            if(data.map[lKey].chest)
-                data.map[lKey].chest.alpha = 0;
         }
 
         data.lit = [];
@@ -150,7 +148,6 @@ define([
             game.load.image('boy', 'assets/jumping-boy.png');
             game.load.image('mob', 'assets/monster-sprite.png');
             game.load.spritesheet('tiles', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png', 16, 16, -1, 0, 1);
-            game.load.image('tile-layer', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png');
         },
         create: function() {
 
@@ -179,7 +176,6 @@ define([
 
             data.engine = new ROT.Engine(scheduler);
             data.engine.start();
-
         },
         update: function() {
             updateLight(data);
@@ -188,11 +184,7 @@ define([
 
             for(var k = 0; k < visible.length; k++) {
                 var key = visible[k];
-                if(!data.map[key])
-                    continue;
                 data.map[key].sprite.alpha = data.lightStrength[key];
-                if(data.map[key].chest)
-                    data.map[key].chest.alpha = data.lightStrength[key];
             }
 
             for(var e in data.entities) {
