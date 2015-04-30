@@ -1,7 +1,4 @@
 define(function() {
-    var tileSize = 32;
-    var tileScale = 2;
-
     return {
         gridTileToScreen: function(sprite, scale, offset) {
             offset = offset || { x: 0, y: 0 };
@@ -9,21 +6,24 @@ define(function() {
             offset.y = offset.y || 0;
             scale = scale === true || scale === false ? scale : true;
 
-            sprite.x = sprite.x * tileSize + (offset.x * tileSize);
-            sprite.y = sprite.y * tileSize + (offset.y * tileSize);
+            sprite.x = sprite.x * this.getTrueTileSize() + (offset.x * this.getTrueTileSize());
+            sprite.y = sprite.y * this.getTrueTileSize() + (offset.y * this.getTrueTileSize());
 
-            if(scale && tileScale !== 1) {
-                sprite.scale.x = tileScale;
-                sprite.scale.y = tileScale;
+            if(scale && this.tileScale !== 1) {
+                sprite.scale.x = this.tileScale;
+                sprite.scale.y = this.tileScale;
             }
-            else if(tileScale !== 1) {
-                sprite.x += tileSize / 2 - sprite.width / 2;
-                sprite.y += tileSize / 2 - sprite.height / 2;
+            else if(this.tileScale !== 1) {
+                sprite.x += this.getTrueTileSize() / 2 - sprite.width / 2;
+                sprite.y += this.getTrueTileSize() / 2 - sprite.height / 2;
             }
 
             return sprite;
         },
-        tileScale: 2,
-        tileSize: 32
+        tileSize: 16,
+        tileScale: 1,
+        getTrueTileSize: function() {
+            return this.tileSize * this.tileScale;
+        }
     };
 });

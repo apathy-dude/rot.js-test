@@ -1,8 +1,9 @@
 define([
     '../entity',
     '../tile',
-    '../lightPasses'
-    ], function(entity, tile, lightPassConstructor) {
+    '../lightPasses',
+    '../util'
+    ], function(entity, tile, lightPassConstructor, util) {
 
     var data, layer;
 
@@ -37,14 +38,14 @@ define([
         }
 
         var map = game.add.tilemap();
-        map.addTilesetImage('layer', 'tiles', 16, 16, 0, 1);
+        map.addTilesetImage('layer', 'tiles', util.tileSize, util.tileSize, 0, 1);
 
-        layer = map.create('main', 50, 37, 16, 16);
+        layer = map.create('main', 50, 37, util.tileSize, util.tileSize);
 
         map.setCollision([7], true, layer);
 
-        layer.scale.x = 2;
-        layer.scale.y = 2;
+        layer.scale.x = util.tileScale;
+        layer.scale.y = util.tileScale;
 
         layer.resizeWorld();
 
@@ -90,7 +91,7 @@ define([
         game.physics.enable(data.player.sprite, Phaser.Physics.ARCADE);
 
         data.player.sprite.body.collideWorldBounds = true;
-        data.player.sprite.body.setSize(16, 16, 0, 0); 
+        data.player.sprite.body.setSize(util.tileSize, util.tileSize, 0, 0); 
 
         data.entities.push(data.player);
         data.entities.push(createBeing(data, entity.Pedro, freeCells));
@@ -159,7 +160,7 @@ define([
         preload: function() {
             game.load.image('boy', 'assets/jumping-boy.png');
             game.load.image('mob', 'assets/monster-sprite.png');
-            game.load.spritesheet('tiles', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png', 16, 16, -1, 0, 1);
+            game.load.spritesheet('tiles', 'assets/rlpack/Spritesheet/roguelikeSheet_transparent.png', util.tileSize, util.tileSize, -1, 0, 1);
         },
         create: function() {
 
@@ -194,8 +195,8 @@ define([
 
             data.player.act();
 
-            var newX = Math.floor(data.player.sprite.body.x / 32);
-            var newY = Math.floor(data.player.sprite.body.y / 32);
+            var newX = Math.floor(data.player.sprite.body.x / util.getTrueTileSize());
+            var newY = Math.floor(data.player.sprite.body.y / util.getTrueTileSize());
 
             data.player.position.x = newX;
             data.player.position.y = newY;
