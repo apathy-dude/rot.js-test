@@ -11,15 +11,28 @@ define(['./entity'], function(Entity) {
         36: 7,
     };
 
+    var speed = 150;
+
     function Player(gameData, pos) {
         Entity.call(this, gameData, pos, game.add.sprite(pos.x, pos.y, 'boy'));
+        this.cursors = game.input.keyboard.createCursorKeys();
     }
 
     Player.prototype = Object.create(Entity.prototype, {
         act: {
             value: function() {
-                this.gameData.engine.lock();
-                window.addEventListener('keydown', this);
+                this.sprite.body.velocity.x = 0;
+                this.sprite.body.velocity.y = 0;
+
+                if(this.cursors.left.isDown)
+                    this.sprite.body.velocity.x -= speed;
+                if(this.cursors.right.isDown)
+                    this.sprite.body.velocity.x += speed;
+
+                if(this.cursors.up.isDown)
+                    this.sprite.body.velocity.y -= speed;
+                if(this.cursors.down.isDown)
+                    this.sprite.body.velocity.y += speed;
             }
         },
         handleEvent: {

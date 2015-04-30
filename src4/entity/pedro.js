@@ -29,8 +29,8 @@ define(['./entity'], function(Entity) {
                 var path = pathfind(this.gameData, this);
                 path.shift();
                 if(path.length <= 1) {
-                    this.gameData.engine.lock();
-                    alert('Game over - you were captured by Pedro!');
+                    //this.gameData.engine.lock();
+                    //alert('Game over - you were captured by Pedro!');
                 }
                 else {
                     var diff = [

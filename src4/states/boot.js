@@ -10,6 +10,8 @@ define([
         var width = 50;
         var height = 37;
 
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
         function generateBoxes(data, freeCells) {
             for(var i = 0; i < 10; i++) {
                 var chest = createBeing(data, entity.Chest, freeCells);
@@ -38,10 +40,15 @@ define([
         map.addTilesetImage('layer', 'tiles', 16, 16, 0, 1);
 
         layer = map.create('main', 50, 37, 16, 16);
+
+        map.setCollision([7], true, layer);
+
         layer.scale.x = 2;
         layer.scale.y = 2;
 
         layer.resizeWorld();
+
+//layer.debug = true;
 
         var digger = new ROT.Map.Digger(50 , 37);
         var freeCells = [];
@@ -79,6 +86,11 @@ define([
 
         data.player = createBeing(data, entity.Player, freeCells);
         data.player.lightRange = 3;
+
+        game.physics.enable(data.player.sprite, Phaser.Physics.ARCADE);
+
+        data.player.sprite.body.collideWorldBounds = true;
+        data.player.sprite.body.setSize(16, 16, 0, 0); 
 
         data.entities.push(data.player);
         data.entities.push(createBeing(data, entity.Pedro, freeCells));
@@ -174,10 +186,29 @@ define([
 
             data.shadowcaster = new ROT.FOV.RecursiveShadowcasting(lightPassConstructor(data.map));
 
-            data.engine = new ROT.Engine(scheduler);
-            data.engine.start();
+//            data.engine = new ROT.Engine(scheduler);
+//            data.engine.start();
         },
         update: function() {
+            game.physics.arcade.collide(data.player.sprite, layer);
+
+            data.player.act();
+
+            var newX = Math.floor(data.player.sprite.body.x / 32);
+            var newY = Math.floor(data.player.sprite.body.y / 32);
+
+            data.player.position.x = newX;
+            data.player.position.y = newY;
+
+/*
+            for(var en in data.entities) {
+                var entity = data.entities[en];
+                if(!entity || !entity.act)
+                    return;
+                entity.act();
+            }
+*/
+
             updateLight(data);
 
             var visible = getVisible(data, data.player);
@@ -201,6 +232,7 @@ define([
             }
         },
         render: function() {
+            //game.debug.body(data.player.sprite);
         },
         paused: function() {
         },
