@@ -17,7 +17,7 @@ define(['./entity'], function(Entity) {
             path.push([x, y]);
         }
 
-        var astar = new ROT.Path.AStar(target.x, target.y, passableCallback, { topology: 8 });
+        var astar = new ROT.Path.AStar(target.x, target.y, passableCallback, { topology: 4 });
         astar.compute(pedro.position.x, pedro.position.y, pathCallback);
 
         return path;
@@ -29,7 +29,6 @@ define(['./entity'], function(Entity) {
                 var path = pathfind(this.gameData, this);
                 path.shift();
                 if(path.length <= 1) {
-                    //this.gameData.engine.lock();
                     //alert('Game over - you were captured by Pedro!');
                 }
                 else {

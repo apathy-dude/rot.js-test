@@ -87,14 +87,17 @@ define([
 
         data.player = createBeing(data, entity.Player, freeCells);
         data.player.lightRange = 3;
-
         game.physics.enable(data.player.sprite, Phaser.Physics.ARCADE);
-
         data.player.sprite.body.collideWorldBounds = true;
         data.player.sprite.body.setSize(util.tileSize, util.tileSize, 0, 0); 
 
+        var pedro = createBeing(data, entity.Pedro, freeCells);
+        game.physics.enable(pedro.sprite, Phaser.Physics.ARCADE);
+        pedro.sprite.body.collideWorldBounds = true;
+        pedro.sprite.body.setSize(util.tileSize, util.tileSize, 0, 0);
+
         data.entities.push(data.player);
-        data.entities.push(createBeing(data, entity.Pedro, freeCells));
+        data.entities.push(pedro);
     }
 
     function calculateEntityLight(gameData, target) {
@@ -193,22 +196,6 @@ define([
         update: function() {
             game.physics.arcade.collide(data.player.sprite, layer);
 
-            data.player.act();
-
-            var newX = Math.floor(data.player.sprite.body.x / util.getTrueTileSize());
-            var newY = Math.floor(data.player.sprite.body.y / util.getTrueTileSize());
-
-            data.player.position.x = newX;
-            data.player.position.y = newY;
-
-/*
-            for(var en in data.entities) {
-                var entity = data.entities[en];
-                if(!entity || !entity.act)
-                    return;
-                entity.act();
-            }
-*/
 
             updateLight(data);
 
@@ -230,6 +217,7 @@ define([
                     ent.sprite.alpha = data.lightStrength[pos];
                 else
                     ent.sprite.alpha = 0;
+                ent.act();
             }
         },
         render: function() {
